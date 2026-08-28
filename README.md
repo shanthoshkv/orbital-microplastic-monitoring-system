@@ -29,7 +29,7 @@ The S-band patch is sized in closed form on RT/Duroid 6006 (εr = 6.0, h = 3.2 m
 
 **Important:** the polymer type label (PET/PE/PP/PS/mixed) it assigns per patch is `random.choice(self.plastic_types)`, not a trained classifier. This is a prototype for the detection *pipeline* (index → threshold → connected components → bounding box), not a working spectral classifier. Treat the boxes as "the index fired here," not as a laboratory-grade polymer ID. A flown mission would replace this step with an onboard classifier trained on real VNIR/SWIR cubes, which is what the architecture section of the report specifies.
 
-**Sentinel-1/2 scenes used as test inputs:** three basins — South China Sea (Fujian coast, industrial dumping signal, 28 Jan 2023), the Norwegian Sea off Bergen, and the central Mediterranean between Sicily and Greece. Images live at repo root and in `Plastic Detection Code/` (several are duplicated under inconsistent/misspelled filenames from manual downloads, e.g. `sentinel 1 near norway.jpg` vs `norway_sar_s1.jpg` — same content, not cleaned up).
+**Sentinel-1/2 scenes used as test inputs:** three basins, South China Sea (Fujian coast, industrial dumping signal, 28 Jan 2023), the Norwegian Sea off Bergen, and the central Mediterranean between Sicily and Greece. The copies the detector script actually reads live in `Plastic Detection Code/`. The original, inconsistently named downloads (e.g. `sentinel 1 near norway.jpg`, same content as `norway_sar_s1.jpg`) are archived in `raw_images/` for reference, they aren't read by any code.
 
 ## What's described in the report but not in this repo
 
@@ -54,10 +54,16 @@ Update the `regions` dict in `main()` with your own image filenames if you're no
 *Central Mediterranean, Sentinel-2 SWIR strip.*
 
 ![Mediterranean urban SAR](docs/images/Figure_3.png)
-*Mediterranean urban SAR scene — this case ended up tagging most of the strip as one large detection (31.45 km²), which is a limitation of the fixed-percentile threshold, not an actual 31 km² slick.*
+*Mediterranean urban SAR scene, this case ended up tagging most of the strip as one large detection (31.45 km²), which is a limitation of the fixed-percentile threshold, not an actual 31 km² slick.*
+
+![South China Sea, SAR over the urban/coastal strip](docs/images/south_china_sea_sar_urban.jpg)
+*South China Sea, the SAR input used for the fusion composite below, Fujian coast urban/coastal strip.*
+
+![South China Sea, SWIR](docs/images/south_china_sea_swir.jpg)
+*South China Sea, Sentinel-2 SWIR band over the same area, the optical half of the fusion pair.*
 
 ![SAR/optical fusion composite](docs/images/image_fusion.png)
-*Output of the (not included) fusion script on the South China Sea pair: 356 matched keypoints, Laplacian variance 1298.89.*
+*Output of the (not included) fusion script on the South China Sea pair above: 356 matched keypoints, Laplacian variance 1298.89.*
 
 ## Limitations
 
@@ -65,8 +71,8 @@ Update the `regions` dict in `main()` with your own image filenames if you're no
 - Polymer classification is randomized, not learned — see above.
 - The connected-components threshold (top 15% of the index) over-detects on high-contrast SAR scenes (urban coastline case above).
 - Antenna designs are closed-form + HFSS simulation, not fabricated/measured hardware.
-- The repo has duplicate, inconsistently named copies of the same source images scattered across the root, `Plastic Detection Code/`, and `Report/Environment EL/images/`; worth a manual cleanup pass if this repo grows further.
+- The originally-downloaded scene files had inconsistent, misspelled names and duplicate copies scattered across the repo root; these are now archived in `raw_images/`, and the code's own copies stay in `Plastic Detection Code/`, but the underlying data collection process wasn't tidy.
 
 ## Authors
 
-Sanskar Verma, Sarthak Sharma, Shambhavi Shukla, Shanthosh K V — RVCE, Experiential Learning (CV242TA). Guide: Dr. A R Vinod.
+Sanskar Verma, Sarthak Sharma, Shambhavi Shukla, Shanthosh K V, RVCE, Experiential Learning (CV242TA). Guide: Dr. A R Vinod.
